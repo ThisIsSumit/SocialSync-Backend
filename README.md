@@ -6,7 +6,6 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2+-green?style=for-the-badge&logo=springboot)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue?style=for-the-badge&logo=postgresql)
 
-
 **A powerful RESTful API for comprehensive social media management**
 
 [Features](#features) • [Quick Start](#quick-start) • [API Documentation](#api-documentation) • [Configuration](#configuration) • [Contributing](#contributing)
