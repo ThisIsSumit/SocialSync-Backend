@@ -1,6 +1,7 @@
 package com.socialsync.socialsyncbackend.repositories;
 
-import org.apache.catalina.User;
+
+import com.socialsync.socialsyncbackend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
