@@ -1,3 +1,5 @@
+package com.socialsync.socialsyncbackend.entity;
+
 import com.socialsync.socialsyncbackend.entity.ScheduledPost;
 import com.socialsync.socialsyncbackend.entity.SocialMediaAccount;
 import jakarta.persistence.*;
