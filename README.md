@@ -11,7 +11,6 @@
 [Features](#features) • [Quick Start](#quick-start) • [API Documentation](#api-documentation) • [Configuration](#configuration) • [Contributing](#contributing)
 
 </div>
-
 ---
 
 ## 📖 Table of Contents
