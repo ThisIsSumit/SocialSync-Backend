@@ -36,7 +36,9 @@ public class User {
     private Boolean mfaEnabled = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+
 
     private LocalDateTime updatedAt;
 
