@@ -44,7 +44,7 @@
 
 - 🔗 **Multi-Platform Support**: Connect Facebook, Twitter, Instagram, and LinkedIn
 - 📅 **Smart Scheduling**: Schedule posts across platforms with automated publishing
-- 📊 **Analytics Dashboard**: Track engagement metrics and performance
+- 📊 **com.socialsync.socialsyncbackend.entity.Analytics Dashboard**: Track engagement metrics and performance
 - 🔐 **Enterprise Security**: JWT authentication with bcrypt password hashing
 - 🎯 **RESTful Design**: Clean, well-documented API following REST principles
 - 📱 **Mobile Ready**: Optimized for mobile and web clients
@@ -74,7 +74,7 @@
   - Multi-platform post support
   - Media attachment handling
 
-- ✅ **Analytics & Reporting**
+- ✅ **com.socialsync.socialsyncbackend.entity.Analytics & Reporting**
   - Real-time engagement metrics
   - Follower growth tracking
   - Post performance analytics
@@ -151,10 +151,10 @@ src/main/java/com/socialmedia/dashboard/
 │
 ├── entity/            # Database Entities
 │   ├── User.java
-│   ├── SocialMediaAccount.java
-│   ├── ScheduledPost.java
-│   ├── Analytics.java
-│   └── SupportTicket.java
+│   ├── com.socialsync.socialsyncbackend.entity.SocialMediaAccount.java
+│   ├── com.socialsync.socialsyncbackend.entity.ScheduledPost.java
+│   ├── com.socialsync.socialsyncbackend.entity.Analytics.java
+│   └── com.socialsync.socialsyncbackend.entity.SupportTicket.java
 │
 ├── dto/               # Data Transfer Objects
 │   ├── request/
@@ -444,7 +444,7 @@ SocialSync-API.postman_collection.json
          │ 1:N
          │
 ┌────────▼──────────┐         ┌─────────────────┐
-│ ScheduledPosts    │         │   Analytics     │
+│ ScheduledPosts    │         │   com.socialsync.socialsyncbackend.entity.Analytics     │
 ├───────────────────┤         ├─────────────────┤
 │ id (PK)           │         │ id (PK)         │
 │ user_id (FK)      │◄───────►│ account_id (FK) │
@@ -550,7 +550,7 @@ All endpoints except the following require authentication:
 | GET | `/api/posts` | List scheduled posts | ✅ |
 | DELETE | `/api/posts/{id}` | Delete scheduled post | ✅ |
 
-### Analytics
+### com.socialsync.socialsyncbackend.entity.Analytics
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
