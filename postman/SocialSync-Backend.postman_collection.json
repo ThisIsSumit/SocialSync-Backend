@@ -1,0 +1,885 @@
+{
+  "info": {
+    "_postman_id": "f8a2f3a6-1f78-4a4c-9f65-36ad7d5ce2f1",
+    "name": "SocialSync Backend API",
+    "description": "Comprehensive collection for SocialSync backend APIs with request examples, required parameters, auth flow variables, and sample responses.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    },
+    {
+      "key": "verifyToken",
+      "value": ""
+    },
+    {
+      "key": "postId",
+      "value": "1"
+    },
+    {
+      "key": "accountId",
+      "value": "1"
+    },
+    {
+      "key": "startDate",
+      "value": "2026-01-01"
+    },
+    {
+      "key": "endDate",
+      "value": "2026-01-31"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phoneNumber\": \"+15551234567\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "signup"
+              ]
+            },
+            "description": "Required body params: email, password. Optional: firstName, lastName, phoneNumber."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/signup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"token\": \"<jwt-token>\",\n  \"type\": \"Bearer\",\n  \"userId\": 1,\n  \"email\": \"user@example.com\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) pm.collectionVariables.set('authToken', json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123\",\n  \"mfaCode\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Required body params: email, password. Optional when MFA enabled: mfaCode."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"token\": \"<jwt-token>\",\n  \"type\": \"Bearer\",\n  \"userId\": 1,\n  \"email\": \"user@example.com\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) pm.collectionVariables.set('authToken', json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-email?token={{verifyToken}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify-email"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{verifyToken}}"
+                }
+              ]
+            },
+            "description": "Required query param: token (email verification token)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "body": "Email verified successfully"
+            }
+          ]
+        },
+        {
+          "name": "MFA Challenge",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/mfa/challenge",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "mfa",
+                "challenge"
+              ]
+            },
+            "description": "Required body params: email, password. Sends MFA code via configured email/SMS providers."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"MFA code generated\",\n  \"expiresAt\": \"2026-03-23T20:00:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "MFA Toggle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/mfa/toggle",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "mfa",
+                "toggle"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required body param: enabled (boolean)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "body": "MFA enabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profile"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": 1,\n  \"email\": \"user@example.com\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phoneNumber\": \"+15551234567\",\n  \"emailVerified\": true,\n  \"mfaEnabled\": true,\n  \"emailNotifications\": true,\n  \"pushNotifications\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phoneNumber\": \"+15551234567\",\n  \"emailNotifications\": true,\n  \"pushNotifications\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "profile"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Body params are optional and patch-like."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": 1,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phoneNumber\": \"+15551234567\",\n  \"emailNotifications\": true,\n  \"pushNotifications\": false\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Connect Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"platform\": \"instagram\",\n  \"accessToken\": \"platform-access-token\",\n  \"refreshToken\": \"platform-refresh-token\",\n  \"accountId\": \"ig_123456\",\n  \"accountName\": \"My IG\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/accounts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounts"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required body params: platform, accessToken."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": 1,\n  \"platform\": \"INSTAGRAM\",\n  \"accountName\": \"My IG\",\n  \"accountId\": \"ig_123456\",\n  \"isActive\": true,\n  \"connectedAt\": \"2026-03-23T20:00:00\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.id) pm.collectionVariables.set('accountId', String(json.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounts"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": 1,\n    \"platform\": \"INSTAGRAM\",\n    \"accountName\": \"My IG\",\n    \"accountId\": \"ig_123456\",\n    \"isActive\": true,\n    \"connectedAt\": \"2026-03-23T20:00:00\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Disconnect Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/accounts/{{accountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "accounts",
+                "{{accountId}}"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required path param: accountId."
+          },
+          "response": [
+            {
+              "name": "No Content",
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "text",
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "Schedule Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": {{accountId}},\n  \"content\": \"Scheduled campaign content\",\n  \"mediaUrl\": \"https://example.com/media.jpg\",\n  \"scheduledTime\": \"2026-12-01T10:30:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/posts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "posts"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required body params: accountId, content, scheduledTime (future datetime)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": 10,\n  \"accountId\": 1,\n  \"platform\": \"INSTAGRAM\",\n  \"content\": \"Scheduled campaign content\",\n  \"mediaUrl\": \"https://example.com/media.jpg\",\n  \"scheduledTime\": \"2026-12-01T10:30:00\",\n  \"status\": \"PENDING\",\n  \"createdAt\": \"2026-03-23T20:00:00\",\n  \"publishedAt\": null\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.id) pm.collectionVariables.set('postId', String(json.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Scheduled Posts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/posts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "posts"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": 10,\n    \"accountId\": 1,\n    \"platform\": \"INSTAGRAM\",\n    \"content\": \"Scheduled campaign content\",\n    \"status\": \"PENDING\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Calendar Posts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/calendar?startDate={{startDate}}&endDate={{endDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "posts",
+                "calendar"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "{{startDate}}"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{endDate}}"
+                }
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required query params: startDate, endDate (YYYY-MM-DD)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": 10,\n    \"scheduledTime\": \"2026-12-01T10:30:00\",\n    \"status\": \"PENDING\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Delete Scheduled Post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/{{postId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "posts",
+                "{{postId}}"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required path param: postId."
+          },
+          "response": [
+            {
+              "name": "No Content",
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "text",
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analytics and Reports",
+      "item": [
+        {
+          "name": "Get Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"accountId\": 1,\n    \"platform\": \"INSTAGRAM\",\n    \"accountName\": \"My IG\",\n    \"followers\": 1200,\n    \"totalLikes\": 350,\n    \"totalComments\": 40,\n    \"totalShares\": 25,\n    \"totalImpressions\": 7500,\n    \"engagementRate\": 5.6,\n    \"lastUpdated\": \"2026-03-23T20:00:00\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Download Analytics Report CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/reports?startDate={{startDate}}&endDate={{endDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "reports"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "{{startDate}}"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{endDate}}"
+                }
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required query params: startDate, endDate. Returns text/csv file."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "body": "Report Type,Platform,Account Name,Recorded At,Followers,Likes,Comments,Shares,Impressions,Engagement Rate"
+            }
+          ]
+        },
+        {
+          "name": "Download Consolidated Report CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports?startDate={{startDate}}&endDate={{endDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "{{startDate}}"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{endDate}}"
+                }
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required query params: startDate, endDate. Returns text/csv file."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "body": "Report Type,Platform,Account Name,Recorded At,Followers,Likes,Comments,Shares,Impressions,Engagement Rate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Support",
+      "item": [
+        {
+          "name": "Create Support Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Unable to connect account\",\n  \"description\": \"Instagram auth fails with invalid redirect URI\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/support",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "support"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token. Required body params: subject, description."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": 5,\n  \"subject\": \"Unable to connect account\",\n  \"description\": \"Instagram auth fails with invalid redirect URI\",\n  \"status\": \"OPEN\",\n  \"createdAt\": \"2026-03-23T20:00:00\",\n  \"resolvedAt\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Support Tickets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/support/tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "support",
+                "tickets"
+              ]
+            },
+            "description": "Required header: Authorization Bearer token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": 5,\n    \"subject\": \"Unable to connect account\",\n    \"description\": \"Instagram auth fails with invalid redirect URI\",\n    \"status\": \"OPEN\",\n    \"createdAt\": \"2026-03-23T20:00:00\",\n    \"resolvedAt\": null\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get FAQs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/support/faqs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "support",
+                "faqs"
+              ]
+            },
+            "description": "Public endpoint. No auth required."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  \"How do I connect a social media account?\",\n  \"How do I schedule a post?\",\n  \"What analytics are available?\",\n  \"How do I change my password?\",\n  \"What platforms are supported?\"\n]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
