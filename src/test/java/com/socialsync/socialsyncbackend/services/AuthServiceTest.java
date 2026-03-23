@@ -41,6 +41,9 @@ class AuthServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
+    @Mock
+    private NotificationService notificationService;
+
     @InjectMocks
     private AuthService authService;
 
@@ -91,13 +94,14 @@ class AuthServiceTest {
 
     @Test
     void login_shouldAuthenticateAndReturnAuthResponse() {
-        LoginRequest request = new LoginRequest("john@example.com", "Password123");
+        LoginRequest request = new LoginRequest("john@example.com", "Password123", null);
         User user = User.builder()
                 .id(42L)
                 .email("john@example.com")
                 .firstName("John")
                 .lastName("Smith")
                 .password("encoded")
+            .emailVerified(true)
                 .build();
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
@@ -117,7 +121,7 @@ class AuthServiceTest {
 
     @Test
     void login_shouldThrowWhenUserNotFound() {
-        LoginRequest request = new LoginRequest("missing@example.com", "Password123");
+        LoginRequest request = new LoginRequest("missing@example.com", "Password123", null);
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(org.mockito.Mockito.mock(Authentication.class));
@@ -126,5 +130,24 @@ class AuthServiceTest {
         RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.login(request));
 
         assertEquals("User not found", ex.getMessage());
+    }
+
+    @Test
+    void login_shouldThrowWhenEmailNotVerified() {
+        LoginRequest request = new LoginRequest("john@example.com", "Password123", null);
+        User user = User.builder()
+                .id(42L)
+                .email("john@example.com")
+                .password("encoded")
+                .emailVerified(false)
+                .build();
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(org.mockito.Mockito.mock(Authentication.class));
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.login(request));
+
+        assertEquals("Email not verified. Verify your account before login.", ex.getMessage());
     }
 }

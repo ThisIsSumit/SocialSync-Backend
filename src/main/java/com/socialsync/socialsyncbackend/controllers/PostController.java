@@ -10,8 +10,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -41,6 +44,20 @@ public class PostController {
         String jwt = token.substring(7);
         Long userId = jwtUtil.extractUserId(jwt);
         return ResponseEntity.ok(postService.getScheduledPosts(userId));
+    }
+
+    @GetMapping("/calendar")
+    @Operation(summary = "Get scheduled posts in calendar range")
+    public ResponseEntity<List<ScheduledPostResponse>> getCalendarPosts(
+            @RequestHeader("Authorization") String token,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        String jwt = token.substring(7);
+        Long userId = jwtUtil.extractUserId(jwt);
+
+        LocalDateTime start = startDate.atStartOfDay();
+        LocalDateTime end = endDate.plusDays(1).atStartOfDay().minusNanos(1);
+        return ResponseEntity.ok(postService.getScheduledPostsForRange(userId, start, end));
     }
 
     @DeleteMapping("/{postId}")

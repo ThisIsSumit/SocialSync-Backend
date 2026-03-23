@@ -49,6 +49,13 @@ public class PostSchedulingService {
                 .collect(Collectors.toList());
     }
 
+    public List<ScheduledPostResponse> getScheduledPostsForRange(Long userId, LocalDateTime start, LocalDateTime end) {
+        return postRepository.findByUserIdAndScheduledTimeBetweenOrderByScheduledTimeAsc(userId, start, end)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void deleteScheduledPost(Long userId, Long postId) {
         ScheduledPost post = postRepository.findByIdAndUserId(postId, userId)

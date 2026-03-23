@@ -37,6 +37,12 @@ public class UserService {
         if (request.getPhoneNumber() != null) {
             user.setPhoneNumber(request.getPhoneNumber());
         }
+        if (request.getEmailNotifications() != null) {
+            user.setEmailNotifications(request.getEmailNotifications());
+        }
+        if (request.getPushNotifications() != null) {
+            user.setPushNotifications(request.getPushNotifications());
+        }
 
         user.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(user);

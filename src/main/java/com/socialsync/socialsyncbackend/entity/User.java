@@ -35,6 +35,22 @@ public class User {
     @Column(nullable = false)
     private Boolean mfaEnabled = false;
 
+    private String emailVerificationToken;
+
+    private LocalDateTime emailVerificationExpiresAt;
+
+    private String mfaCode;
+
+    private LocalDateTime mfaCodeExpiresAt;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean emailNotifications = true;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean pushNotifications = true;
+
     @Column(nullable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();

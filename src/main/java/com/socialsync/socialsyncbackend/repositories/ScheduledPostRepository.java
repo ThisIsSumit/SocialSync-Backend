@@ -13,6 +13,12 @@ import java.util.Optional;
 public interface ScheduledPostRepository extends JpaRepository<ScheduledPost, Long> {
     List<ScheduledPost> findByUserId(Long userId);
 
+    List<ScheduledPost> findByUserIdAndScheduledTimeBetweenOrderByScheduledTimeAsc(
+            Long userId,
+            LocalDateTime start,
+            LocalDateTime end
+    );
+
     List<ScheduledPost> findByStatusAndScheduledTimeBefore(PostStatus status, LocalDateTime time);
 
     Optional<ScheduledPost> findByIdAndUserId(Long id, Long userId);

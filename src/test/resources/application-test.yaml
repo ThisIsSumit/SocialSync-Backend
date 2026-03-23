@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:socialsync;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+jwt:
+  secret: test-secret-key-for-context-load-tests-123456
+  expiration: 86400000
+
+app:
+  email:
+    sendgrid:
+      api-key: ""
+  sms:
+    enabled: false

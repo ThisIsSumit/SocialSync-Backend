@@ -1,9 +1,6 @@
 package com.socialsync.socialsyncbackend.controllers;
 
-
-import com.socialsync.socialsyncbackend.dto.AnalyticsResponse;
 import com.socialsync.socialsyncbackend.security.JwtUtil;
-import com.socialsync.socialsyncbackend.services.AnalyticsService;
 import com.socialsync.socialsyncbackend.services.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,33 +10,27 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/analytics")
+@RequestMapping("/api/reports")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
-@Tag(name = "Analytics", description = "View social media analytics")
-public class AnalyticsController {
+@Tag(name = "Reports", description = "Generate downloadable performance reports")
+public class ReportController {
 
-    private final AnalyticsService analyticsService;
     private final ReportService reportService;
     private final JwtUtil jwtUtil;
 
     @GetMapping
-    @Operation(summary = "Get analytics for all connected accounts")
-    public ResponseEntity<List<AnalyticsResponse>> getAnalytics(
-            @RequestHeader("Authorization") String token) {
-        String jwt = token.substring(7);
-        Long userId = jwtUtil.extractUserId(jwt);
-        return ResponseEntity.ok(analyticsService.getAnalytics(userId));
-    }
-
-    @GetMapping("/reports")
-    @Operation(summary = "Generate and download performance reports")
+    @Operation(summary = "Generate and download performance report")
     public ResponseEntity<byte[]> generateReport(
             @RequestHeader("Authorization") String token,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -49,12 +40,12 @@ public class AnalyticsController {
 
         LocalDateTime start = startDate.atStartOfDay();
         LocalDateTime end = endDate.plusDays(1).atStartOfDay().minusNanos(1);
-        byte[] report = reportService.generateCsvReport(userId, start, end);
+        byte[] content = reportService.generateCsvReport(userId, start, end);
 
-        String filename = "analytics-report-" + startDate + "-to-" + endDate + ".csv";
+        String filename = "social-report-" + startDate + "-to-" + endDate + ".csv";
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("text/csv"))
-                .body(report);
+                .body(content);
     }
 }

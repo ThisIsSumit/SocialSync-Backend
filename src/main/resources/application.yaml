@@ -6,9 +6,9 @@ spring:
     name: social-sync-backend
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/socialsync
-    username: postgres
-    password: admin@123
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/socialsync}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -37,8 +37,26 @@ spring:
             client-secret: ${INSTAGRAM_CLIENT_SECRET}
 
 jwt:
-  secret: ${JWT_SECRET:mySecretKeyForJWTTokenGeneration123456789}
-  expiration: 86400000
+  secret: ${JWT_SECRET:replace-me-with-a-secure-env-secret-32-bytes}
+  expiration: ${JWT_EXPIRATION_MS:86400000}
+
+app:
+  frontend:
+    base-url: ${FRONTEND_BASE_URL:http://localhost:3000}
+  email:
+    from: ${EMAIL_FROM:no-reply@socialsync.local}
+    sendgrid:
+      api-key: ${SENDGRID_API_KEY:}
+  sms:
+    enabled: ${SMS_ENABLED:false}
+    twilio:
+      account-sid: ${TWILIO_ACCOUNT_SID:}
+      auth-token: ${TWILIO_AUTH_TOKEN:}
+      from-number: ${TWILIO_FROM_NUMBER:}
+  rate-limit:
+    auth:
+      login-per-minute: ${AUTH_LOGIN_RATE_LIMIT_PER_MINUTE:10}
+      signup-per-hour: ${AUTH_SIGNUP_RATE_LIMIT_PER_HOUR:20}
 
 springdoc:
   api-docs:

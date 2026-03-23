@@ -11,4 +11,6 @@ public class ProfileUpdateRequest {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private Boolean emailNotifications;
+    private Boolean pushNotifications;
 }
