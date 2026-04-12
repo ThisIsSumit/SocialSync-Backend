@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Java 21](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java&logoColor=white)
+![Java 26](https://img.shields.io/badge/Java-26-orange?style=for-the-badge&logo=java&logoColor=white)
 ![Spring Boot 4.0](https://img.shields.io/badge/Spring%20Boot-4.0-green?style=for-the-badge&logo=springboot&logoColor=white)
 ![PostgreSQL 15](https://img.shields.io/badge/PostgreSQL-15+-blue?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/JWT-OAuth2-red?style=for-the-badge)
